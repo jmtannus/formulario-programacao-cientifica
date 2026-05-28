@@ -1,6 +1,11 @@
 export default function FormularioProgramacaoCientifica() {
   const sections = [
     {
+      title: 'Responsáveis pelo Módulo',
+      description: 'Defina os principais contatos responsáveis pela operação e homologação da Programação Científica.',
+      contactsTable: true,
+    },
+    {
       title: 'Dados do Evento',
       description: 'Informações gerais utilizadas na configuração inicial do módulo.',
       fields: [
@@ -223,6 +228,57 @@ export default function FormularioProgramacaoCientifica() {
                         )}
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {section.contactsTable && (
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[760px] border border-slate-200 rounded-3xl overflow-hidden">
+                      <div className="grid grid-cols-[220px_1fr_1fr] bg-slate-100 border-b border-slate-200">
+                        <div className="px-6 py-5 font-bold text-[#163b60] border-r border-slate-200">
+                          Campo
+                        </div>
+
+                        <div className="px-6 py-5 font-bold text-[#163b60] border-r border-slate-200">
+                          Contato 1
+                        </div>
+
+                        <div className="px-6 py-5 font-bold text-[#163b60]">
+                          Contato 2
+                        </div>
+                      </div>
+
+                      {[
+                        'Nome Completo',
+                        'E-mail',
+                        'Telefone / WhatsApp',
+                        'Cargo',
+                        'Empresa / Instituição',
+                      ].map((field, rowIndex) => (
+                        <div
+                          key={rowIndex}
+                          className="grid grid-cols-[220px_1fr_1fr] border-b border-slate-200 last:border-b-0"
+                        >
+                          <div className="px-6 py-6 bg-slate-50 border-r border-slate-200 font-medium text-slate-700 flex items-center">
+                            {field}
+                          </div>
+
+                          <div className="p-4 border-r border-slate-200 bg-white">
+                            <input
+                              type="text"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all"
+                            />
+                          </div>
+
+                          <div className="p-4 bg-white">
+                            <input
+                              type="text"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
