@@ -1,4 +1,29 @@
+import { useState } from 'react';
+
 export default function FormularioProgramacaoCientifica() {
+  const [formData, setFormData] = useState({});
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = [
+    'Dados do Evento',
+    'Responsáveis',
+    'Estrutura Científica',
+    'Publicação',
+    'Uploads',
+    'Revisão Final',
+  ];
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = [
+    'Dados do Evento',
+    'Responsáveis',
+    'Estrutura Científica',
+    'Publicação',
+    'Uploads',
+    'Revisão Final',
+  ];
+  const [errors, setErrors] = useState({});
+
   const sections = [
     {
       title: 'Responsáveis pelo Módulo',
@@ -111,8 +136,120 @@ export default function FormularioProgramacaoCientifica() {
       ],
     },
   ];
+  const handleChange = (label, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [label]: value,
+    }));
 
-  return (
+    if (value.trim() !== '') {
+      setErrors((prev) => ({
+        ...prev,
+        [label]: false,
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    sections.forEach((section) => {
+      if (section.fields) {
+        section.fields.forEach((field) => {
+          if (field.requiconst nextStep = () => {
+            const isValid = validateForm();
+
+            if (!isValid) {
+              alert('Preencha os campos obrigatórios antes de continuar.');
+              return;
+            }
+
+            if (currentStep < steps.length - 1) {
+              setCurrentStep(currentStep + 1);
+            }
+          };
+
+          const prevStep = () => {
+            if (currentStep > 0) {
+              setCurrentStep(currentStep - 1);
+            }
+          };
+
+          const handleSubmit = () => {]) {
+          newErrors[field.label] = true;
+        }
+      });
+  }
+});
+
+setErrors(newErrors);
+
+return Object.keys(newErrors).length === 0;
+};
+
+const nextStep = () return (
+  <>
+    <div className="mb-10 px-6 pt-6 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between mb-4 gap-2">
+        {steps.map((step, index) => (
+          <div key={index} className="flex-1 flex items-center">
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${index <= currentStep
+                  ? 'bg-cyan-500 text-white'
+                  : 'bg-slate-200 text-slate-500'
+                }`}
+            >
+              {index + 1}
+            </div>
+
+            {index < steps.length - 1 && (
+              <div
+                className={`flex-1 h-1 mx-2 rounded-full transition-all ${index < currentStep
+                    ? 'bg-cyan-500'
+                    : 'bg-slate-200'
+                  }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-between text-xs md:text-sm text-slate-500 font-medium">
+        {steps.map((step, index) => (
+          <span
+            key={index}
+            className={index === currentStep ? 'text-cyan-600 font-semibold' : ''}
+          >
+            {step}
+          </span>
+        ))}
+      </div>
+    </div>onst isValid = validateForm();
+
+    if (!isValid) {
+      alert('Preencha os campos obrigatórios antes de continuar.');
+    return;
+  }
+
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+  }
+};
+
+const prevStep = () => {
+  if (currentStep > 0) {
+      setCurrentStep(currentStep
+  const isValid = validateForm();
+
+    if (!isValid) {
+      alert('Preencha todos os campos obrigatórios.');
+    return;
+  }
+
+    alert('Formulário enviado com sucesso!');
+};
+
+    return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800">
       <header className="bg-gradient-to-r from-[#163b60] to-[#1c4e80] shadow-xl">
         <div className="max-w-7xl mx-auto px-6 py-10">
@@ -211,20 +348,74 @@ export default function FormularioProgramacaoCientifica() {
                         </label>
 
                         {field.type === 'select' ? (
-                          <select className="w-full rounded-2xl border border-slate-200 px-4 py-3 bg-white focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all">
-                            {field.options.map((option, optionIndex) => (
-                              <option key={optionIndex}>{option}</option>
-                            ))}
-                          </select>
+                          <>
+                            <select
+                              value={formData[field.label] || ''}
+                              onChange={(e) =>
+                                handleChange(field.label, e.target.value)
+                              }
+                              className={`w-full rounded-2xl border px-4 py-3 bg-white focus:outline-none focus:ring-4 transition-all ${errors[field.label]
+                                  ? 'border-red-500 focus:ring-red-100'
+                                  : 'border-slate-200 focus:ring-cyan-100 focus:border-cyan-400'
+                                }`}
+                            >
+                              <option value="">Selecione</option>
+
+                              {field.options.map((option, optionIndex) => (
+                                <option key={optionIndex} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+
+                            {errors[field.label] && (
+                              <p className="text-red-500 text-sm">
+                                Campo obrigatório
+                              </p>
+                            )}
+                          </>
                         ) : field.type === 'file' ? (
-                          <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 bg-slate-50 hover:bg-cyan-50 hover:border-cyan-300 transition-all cursor-pointer">
-                            <input type="file" className="w-full text-sm" />
-                          </div>
+                          <>
+                            <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 bg-slate-50 hover:bg-cyan-50 hover:border-cyan-300 transition-all cursor-pointer">
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleChange(
+                                    field.label,
+                                    e.target.files[0]?.name || ''
+                                  )
+                                }
+                                className="w-full text-sm"
+                              />
+                            </div>
+
+                            {errors[field.label] && (
+                              <p className="text-red-500 text-sm">
+                                Campo obrigatório
+                              </p>
+                            )}
+                          </>
                         ) : (
-                          <input
-                            type={field.type}
-                            className="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all"
-                          />
+                          <>
+                            <input
+                              type={field.type}
+                              value={formData[field.label] || ''}
+                              onChange={(e) =>
+                                handleChange(field.label, e.target.value)
+                              }
+                              className={`w-full rounded-2xl border px-4 py-3 focus:outline-none focus:ring-4 transition-all ${errors[field.label]
+                                  ? 'border-red-500 focus:ring-red-100'
+                                  : 'border-slate-200 focus:ring-cyan-100 focus:border-cyan-400'
+                                }`}
+                            />
+
+                            {errors[field.label] && (
+                              <p className="text-red-500 text-sm">
+                                Campo obrigatório
+                              </p>
+                            )}
+                          </>
+                        )}
                         )}
                       </div>
                     ))}
@@ -335,19 +526,45 @@ export default function FormularioProgramacaoCientifica() {
                 </div>
 
                 <div className="flex gap-4">
-                  <button className="px-6 py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-all">
-                    Salvar Rascunho
-                  </button>
+                  {currentStep > 0 && (
+                    <button
+                      onClick={prevStep}
+                      className="mr-4 px-6 py-4 rounded-2xl border border-slate-300 text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                    >
+                      Voltar
+                    </button>
+                  )}
 
-                  <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all">
-                    Finalizar Configuração
-                  </button>
-                </div>
+                  {currentStep < steps.length - 1 ? (
+                    <button
+                      onClick={nextStep}
+                      className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all"
+                    >
+                      Próxima Etapa
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSubmit}
+                      className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all"
+                    >
+                      Finalizar Configuração
+                    </button>
+                  )}xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-all">
+                  Salvar Rascunho
+                </button>
+
+                <button
+                  onClick={handleSubmit}
+                  className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all"
+                >
+                  Finalizar Configuração
+                </button>
               </div>
             </div>
-          </section>
         </div>
-      </main>
+      </section>
     </div>
+  </main >
+    </div >
   );
 }
