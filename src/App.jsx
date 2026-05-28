@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function FormularioProgramacaoCientifica() {
+  const pdfRef = useRef();
   const [formData, setFormData] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -229,7 +232,24 @@ export default function FormularioProgramacaoCientifica() {
     }
   };
 
-  const handleSubmit = () => {
+  const generatePDF = async () => {
+    const canvas = await html2canvas(pdfRef.current, {
+      scale: 2,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    pdf.save('Formulario-Programacao-Cientifica.pdf');
+  };
+
+  const handleSubmit = async () => {
     const isValid = validateForm();
 
     if (!isValid) {
@@ -237,7 +257,9 @@ export default function FormularioProgramacaoCientifica() {
       return;
     }
 
-    alert('Formulário enviado com sucesso!');
+    await generatePDF();
+
+    alert('PDF institucional gerado com sucesso!');
   };
 
   return (
@@ -278,7 +300,7 @@ export default function FormularioProgramacaoCientifica() {
           ))}
         </div>
       </div>
-      <div className="min-h-screen bg-slate-100 font-sans text-slate-800">
+      <div ref={pdfRef} className="min-h-screen bg-slate-100 font-sans text-slate-800">
         <header className="bg-gradient-to-r from-[#163b60] to-[#1c4e80] shadow-xl">
           <div className="max-w-7xl mx-auto px-6 py-10">
             <div className="flex items-center justify-between flex-wrap gap-6">
@@ -545,6 +567,88 @@ export default function FormularioProgramacaoCientifica() {
               </div>
 
               <div className="p-8">
+                <div className="mb-10 rounded-3xl border border-cyan-100 bg-cyan-50 p-6">
+                  <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div>
+                      <h3 className="text-xl font-bold text-[#163b60]">
+                        Checklist Operacional para Pipefy
+                      </h3>
+
+                      <p className="text-sm text-slate-600 mt-2 max-w-2xl leading-6">
+                        Validação final das informações necessárias para implantação da Programação Científica.
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white border border-cyan-100 px-5 py-3 text-sm text-slate-600 shadow-sm">
+                      Documento institucional • iTarget Tecnologia
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {[
+                      'Responsáveis preenchidos',
+                      'Dados do evento validados',
+                      'Logos enviados',
+                      'Publicação aprovada',
+                      'Integração de certificados definida',
+                      'Fluxo de convites configurado',
+                      'Campos obrigatórios definidos',
+                      'Checklist LGPD aprovado',
+                    ].map((item, index) => (
+                      <label
+                        key={index}
+                        className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-5 py-4"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData[item] || false}
+                          onChange={(e) =>
+                            handleChange(item, e.target.checked)
+                          }
+                          className="w-5 h-5 rounded border-slate-300 text-cyan-600 focus:ring-cyan-400"
+                        />
+
+                        <span className="text-sm font-medium text-slate-700">
+                          {item}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700 block mb-2">
+                        Nome do responsável pela aprovação
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData['Responsável Aprovação'] || ''}
+                        onChange={(e) =>
+                          handleChange('Responsável Aprovação', e.target.value)
+                        }
+                        className="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700 block mb-2">
+                        Assinatura Digital / Aceite
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData['Assinatura Digital'] || ''}
+                        onChange={(e) =>
+                          handleChange('Assinatura Digital', e.target.value)
+                        }
+                        placeholder="Digite seu nome completo para validar o aceite"
+                        className="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-slate-700 block">
                     Informações adicionais
