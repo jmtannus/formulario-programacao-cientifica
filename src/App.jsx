@@ -13,10 +13,20 @@ export default function FormularioProgramacaoCientifica() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      'programacao-cientifica',
-      JSON.stringify(formData)
-    );
+    const timeout = setTimeout(() => {
+      localStorage.setItem(
+        'programacao-cientifica',
+        JSON.stringify(formData)
+      );
+
+      setSaveStatus('Rascunho salvo automaticamente');
+
+      setTimeout(() => {
+        setSaveStatus('');
+      }, 2000);
+    }, 400);
+
+    return () => clearTimeout(timeout);
   }, [formData]);
 
   const steps = [
@@ -28,6 +38,8 @@ export default function FormularioProgramacaoCientifica() {
     'Revisão Final',
   ];
   const [errors, setErrors] = useState({});
+  const [completedSections, setCompletedSections] = useState([]);
+  const [saveStatus, setSaveStatus] = useState('');
 
   const sections = [
     {
@@ -173,8 +185,26 @@ export default function FormularioProgramacaoCientifica() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateCurrentStep = () => {
+    const newErrors = {};
+
+    const currentSection = sections[currentStep];
+
+    if (currentSection?.fields) {
+      currentSection.fields.forEach((field) => {
+        if (field.required && !formData[field.label]) {
+          newErrors[field.label] = true;
+        }
+      });
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const nextStep = () => {
-    const isValid = validateForm();
+    const isValid = validateCurrentStep();
 
     if (!isValid) {
       alert('Preencha os campos obrigatórios antes de continuar.');
@@ -182,6 +212,13 @@ export default function FormularioProgramacaoCientifica() {
     }
 
     if (currentStep < steps.length - 1) {
+      if (!completedSections.includes(currentStep)) {
+        setCompletedSections([
+          ...completedSections,
+          currentStep,
+        ]);
+      }
+
       setCurrentStep(currentStep + 1);
     }
   };
