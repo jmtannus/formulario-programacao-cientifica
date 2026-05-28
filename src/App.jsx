@@ -162,7 +162,7 @@ export default function FormularioProgramacaoCientifica() {
       [label]: value,
     }));
 
-    if (value.trim() !== '') {
+    if (typeof value === 'string' ? value.trim() !== '' : value !== null) {
       setErrors((prev) => ({
         ...prev,
         [label]: false,
@@ -695,6 +695,7 @@ export default function FormularioProgramacaoCientifica() {
 
                     {currentStep > 0 && (
                       <button
+                        type="button"
                         onClick={prevStep}
                         className="px-6 py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-all"
                       >
@@ -704,6 +705,7 @@ export default function FormularioProgramacaoCientifica() {
 
                     {currentStep < steps.length - 1 ? (
                       <button
+                        type="button"
                         onClick={nextStep}
                         className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all"
                       >
@@ -711,6 +713,7 @@ export default function FormularioProgramacaoCientifica() {
                       </button>
                     ) : (
                       <button
+                        type="button"
                         onClick={handleSubmit}
                         className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition-all"
                       >
