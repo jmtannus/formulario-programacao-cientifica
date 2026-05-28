@@ -550,10 +550,9 @@ export default function FormularioProgramacaoCientifica() {
                         ))}
                       </div>
                     )}
-                    ))}
                   </div>
                 </section>
-              ))}
+              )}
 
             <section className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
               <div className="border-b border-slate-100 px-8 py-7 bg-slate-50">
@@ -655,11 +654,21 @@ export default function FormularioProgramacaoCientifica() {
                   </label>
 
                   <textarea
+                    value={formData['Informações adicionais'] || ''}
+                    onChange={(e) =>
+                      handleChange('Informações adicionais', e.target.value)
+                    }
                     rows={7}
                     className="w-full rounded-2xl border border-slate-200 px-4 py-4 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-400 transition-all resize-none"
                     placeholder="Digite aqui observações importantes, regras operacionais, necessidades específicas ou informações adicionais para implantação."
                   ></textarea>
                 </div>
+
+                {saveStatus && (
+                  <div className="mb-6 text-sm text-emerald-600 font-medium">
+                    {saveStatus}
+                  </div>
+                )}
 
                 <div className="mt-10 flex items-center justify-between flex-wrap gap-5">
                   <div className="text-sm text-slate-500 leading-6 max-w-xl">
@@ -667,7 +676,20 @@ export default function FormularioProgramacaoCientifica() {
                   </div>
 
                   <div className="flex gap-4 flex-wrap">
-                    <button className="px-6 py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-all">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem(
+                          'programacao-cientifica',
+                          JSON.stringify(formData)
+                        );
+                        setSaveStatus('Rascunho salvo manualmente');
+
+                        setTimeout(() => {
+                          setSaveStatus('');
+                        }, 2000);
+                      }}
+                      className="px-6 py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-all"
+                    >
                       Salvar Rascunho
                     </button>
 
